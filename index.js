@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
+
 const usersRoutes = require("./Routes/users");
 const inmueblesRoutes = require("./Routes/inmuebles");
 
@@ -22,14 +23,14 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/api", usersRoutes);
-app.use("./api", inmueblesRoutes);
+app.use("/api", inmueblesRoutes);
 
 app.get("/error", (req, res) => {
   res.status(400).json({ error: "Recurso not found" });
 });
 
 //Ejecucion del servidor
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3001;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

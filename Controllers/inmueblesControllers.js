@@ -14,15 +14,18 @@ exports.listarInmuebles = (req, res) => {
 
 exports.ingresarInmueble = async (req, res) => {
 
-    const { nombre, metroscuadrados, precioventa, direccion, pais, departamento, ciudad } = req.body;
-
+    const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = req.body;
+    // console.log(descripcion, m2, tipo, tipoOperacion, precio, dormitorios, direccion, pais, departamento, ciudad)
     try {
         await knex.transaction(async (trx) => {
             const inmueble_nuevo = await trx('inmuebles')
                 .insert({
-                    nombre: nombre,
-                    metroscuadrados: metroscuadrados,
-                    precioventa: precioventa,
+                    descripcion: descripcion,
+                    m2: m2,
+                    precio: precio,
+                    tipo_inmueble: tipo_inmueble,
+                    tipo_operacion: tipo_operacion,
+                    dormitorios: dormitorios
 
                 }, 'id_inmueble');
             console.log(inmueble_nuevo);
@@ -32,7 +35,7 @@ exports.ingresarInmueble = async (req, res) => {
                     direccion: direccion,
                     pais: pais,
                     departamento: departamento,
-                    ciudad: ciudad,
+                    barrio: barrio,
                     id_inmueble: inmueble_nuevo[0].id_inmueble
                 });
         })
@@ -46,16 +49,19 @@ exports.ingresarInmueble = async (req, res) => {
 
 exports.modificarInmueble = async (req, res) => {
 
-    const { nombre, metroscuadrados, precioventa, direccion, pais, departamento, ciudad } = req.body;
+    const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = req.body;
     const id = req.params.id
     try {
         await knex.transaction(async (trx) => {
             const inmueble_modificado = await trx('inmuebles')
                 .where("inmuebles.id_inmueble", id)
                 .update({
-                    nombre: nombre,
-                    metroscuadrados: metroscuadrados,
-                    precioventa: precioventa,
+                    descripcion: descripcion,
+                    m2: m2,
+                    precio: precio,
+                    tipo_inmueble: tipo_inmueble,
+                    tipo_operacion: tipo_operacion,
+                    dormitorios: dormitorios
 
                 }, 'id_inmueble');
             console.log(inmueble_modificado);
@@ -66,46 +72,12 @@ exports.modificarInmueble = async (req, res) => {
                     direccion: direccion,
                     pais: pais,
                     departamento: departamento,
-                    ciudad: ciudad,
+                    barrio: barrio,
 
                 });
         })
         res.json({
-            mensaje: "El inmueble se ha ingresado correctamente"
-        })
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
-
-exports.modificarInmueble = async (req, res) => {
-
-    const { nombre, metroscuadrados, precioventa, direccion, pais, departamento, ciudad } = req.body;
-    const id = req.params.id
-    try {
-        await knex.transaction(async (trx) => {
-            const inmueble_modificado = await trx('inmuebles')
-                .where("inmuebles.id_inmueble", id)
-                .update({
-                    nombre: nombre,
-                    metroscuadrados: metroscuadrados,
-                    precioventa: precioventa,
-
-                }, 'id_inmueble');
-            console.log(inmueble_modificado);
-
-            await trx('direcciones')
-                .where("direcciones.id_inmueble", id)
-                .update({
-                    direccion: direccion,
-                    pais: pais,
-                    departamento: departamento,
-                    ciudad: ciudad,
-
-                });
-        })
-        res.json({
-            mensaje: "El inmueble se ha ingresado correctamente"
+            mensaje: "El inmueble se ha modificado correctamente"
         })
     } catch (error) {
         res.status(400).json({ error: error.message });
