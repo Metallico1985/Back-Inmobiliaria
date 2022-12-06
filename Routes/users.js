@@ -6,9 +6,9 @@ const {
     registrarUsuario
 } = require("../Controllers/usersControllers");
 
-const { runValidator } = require("../Validators/index");
+const { runValidation } = require("../Validators/index");
 
-router.post("users/login", runValidator, loginUsuario);
-router.post("users/registro", runValidator, registrarUsuario);
+router.post("/users/login", loginUsuario);
+router.post("/users/registro", runValidation, registrarUsuario);
 
 module.exports = router;
