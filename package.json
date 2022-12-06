@@ -16,10 +16,17 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-validator": "^6.14.2",
+    "fs": "^0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
     "morgan": "^1.10.0",
+<<<<<<< HEAD
     "nodemon": "^2.0.20"
     
+=======
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0"
+>>>>>>> 55b0a91d0d33689d6b03260759fb9b692f102f09
   }
 }

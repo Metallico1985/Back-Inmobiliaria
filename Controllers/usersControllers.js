@@ -41,6 +41,7 @@ exports.loginUsuario = (req, res) => {
             if (!resultado.length) {
                 res.status(404).json({
                     error: "Email y/o contraseña incorrecta/s",
+
                 });
                 return;
             }

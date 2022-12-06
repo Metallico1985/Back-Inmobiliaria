@@ -4,8 +4,8 @@ const knex = require("knex")({
     host: "127.0.0.1",
     port: 5432,
     user: "postgres",
-    password: "Lareputamadre20",
-    database: "Inmobiliaria-Rossi",
+    password: "Huguito2022",
+    database: "Inmobiliario-ProyectoFinal",
   },
 });
 
