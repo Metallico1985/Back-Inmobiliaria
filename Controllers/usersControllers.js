@@ -2,6 +2,10 @@ const knex = require("../Config/bd");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+exports.infoUsuario = async (req, res) => {
+    res.json(req.user)
+}
+
 exports.registrarUsuario = async (req, res) => {
     const { email, password, nombre, apellido, tipo_usuario } = req.body;
 
