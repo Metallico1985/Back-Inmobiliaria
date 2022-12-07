@@ -1,6 +1,6 @@
 const knex = require("../Config/bd");
-// const formidable = require('formidable');
-
+const formidable = require('formidable');
+const fs = require("fs")
 
 exports.listarInmuebles = (req, res) => {
     knex.select("*")
@@ -13,125 +13,149 @@ exports.listarInmuebles = (req, res) => {
             res.status(400).json({ error: error.message });
         });
 };
-
-
-
-
-// exports.ingresarInmueble = async (req, res) => {
-
-//     let form = new formidable.IncomingForm();
-//     form.keepExtensions = true;
-
-//     form.parse(req, (err, fields, files) => {
-//         if (err) {
-//             return res.status(400).json({
-//                 error: "No se pudo cargar la imagen"
-//             });
-//         }
-//         const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = fields
-
-//         try {
-//             await knex.transaction(async (trx) => {
-//                 const inmueble_nuevo = await trx('inmuebles')
-//                     .insert({
-//                         descripcion: descripcion,
-//                         m2: m2,
-//                         precio: precio,
-//                         tipo_inmueble: tipo_inmueble,
-//                         tipo_operacion: tipo_operacion,
-//                         dormitorios: dormitorios
-
-//                     }, 'id_inmueble');
-//                 console.log(inmueble_nuevo);
-
-//                 await trx('direcciones')
-//                     .insert({
-//                         direccion: direccion,
-//                         pais: pais,
-//                         departamento: departamento,
-//                         barrio: barrio,
-//                         id_inmueble: inmueble_nuevo[0].id_inmueble
-//                     });
-//             })
-//             res.json({
-//                 mensaje: "El inmueble se ha ingresado correctamente"
-//             })
-//         } catch (error) {
-//             res.status(400).json({ error: error.message });
-//         }
-//     })
-// }
+exports.traerImagenPropiedad = async (req, res) => {
+    const inmuebleId = req.params.id
+    console.log(inmuebleId)
+    knex("inmuebles")
+        .where({ id_inmueble: inmuebleId })
+        .then((result) => {
+            if (!result[0].filedata) {
+                res.json({
+                    error: "No hay imagen"
+                })
+                return
+            }
+            res.set("Content-Type", result[0].filetype);
+            return res.send(result[0].filedata);
+        })
+        .catch((error) => {
+            res.status(400).json({
+                errror: error.message
+            })
+        })
+}
 
 exports.ingresarInmueble = async (req, res) => {
 
-    const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = req.body;
-    try {
-        await knex.transaction(async (trx) => {
-            const inmueble_nuevo = await trx('inmuebles')
-                .insert({
-                    descripcion: descripcion,
-                    m2: m2,
-                    precio: precio,
-                    tipo_inmueble: tipo_inmueble,
-                    tipo_operacion: tipo_operacion,
-                    dormitorios: dormitorios
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
 
-                }, 'id_inmueble');
-            console.log(inmueble_nuevo);
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "No se pudo cargar la imagen"
+            });
+        }
+        console.log(files.file)
+        let fileData;
+        let fileType;
+        if (files.file) {
+            if (files.file.size > 10000000) {
+                return res.statu(400).json({
+                    error: "Tamaño maximo de la imagen: 1MB"
+                })
+            }
+            fileData = fs.readFileSync(files.file.filepath);
+            fileType = files.file.mimetype
+        }
+        const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = fields
 
-            await trx('direcciones')
-                .insert({
-                    direccion: direccion,
-                    pais: pais,
-                    departamento: departamento,
-                    barrio: barrio,
-                    id_inmueble: inmueble_nuevo[0].id_inmueble
-                });
-        })
-        res.json({
-            mensaje: "El inmueble se ha ingresado correctamente"
-        })
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
+        try {
+            await knex.transaction(async (trx) => {
+                const inmueble_nuevo = await trx('inmuebles')
+                    .insert({
+                        descripcion: descripcion,
+                        m2: m2,
+                        precio: precio,
+                        tipo_inmueble: tipo_inmueble,
+                        tipo_operacion: tipo_operacion,
+                        dormitorios: dormitorios,
+                        filedata: fileData,
+                        filetype: fileType
 
+                    }, 'id_inmueble');
+
+                await trx('direcciones')
+                    .insert({
+                        direccion: direccion,
+                        pais: pais,
+                        departamento: departamento,
+                        barrio: barrio,
+                        id_inmueble: inmueble_nuevo[0].id_inmueble
+                    });
+            })
+            res.json({
+                mensaje: "El inmueble se ha ingresado correctamente"
+            })
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+
+    })
+
+}
+/*/////////////////////////////////////////////////////////////////////////////////////////////////*/
 exports.modificarInmueble = async (req, res) => {
 
-    const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = req.body;
-    const id = req.params.id
-    try {
-        await knex.transaction(async (trx) => {
-            const inmueble_modificado = await trx('inmuebles')
-                .where("inmuebles.id_inmueble", id)
-                .update({
-                    descripcion: descripcion,
-                    m2: m2,
-                    precio: precio,
-                    tipo_inmueble: tipo_inmueble,
-                    tipo_operacion: tipo_operacion,
-                    dormitorios: dormitorios
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
 
-                }, 'id_inmueble');
-            console.log(inmueble_modificado);
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            return res.status(400).json({
+                error: "No se pudo cargar la imagen"
+            });
+        }
+        console.log(files.file)
+        let fileData;
+        let fileType;
+        if (files.file) {
+            if (files.file.size > 10000000) {
+                return res.statu(400).json({
+                    error: "Tamaño maximo de la imagen: 1MB"
+                })
+            }
+            fileData = fs.readFileSync(files.file.filepath);
+            fileType = files.file.mimetype
+        }
 
-            await trx('direcciones')
-                .where("direcciones.id_inmueble", id)
-                .update({
-                    direccion: direccion,
-                    pais: pais,
-                    departamento: departamento,
-                    barrio: barrio,
+        const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = fields
+        const id = fields.id
+        try {
+            await knex.transaction(async (trx) => {
+                const inmueble_modificado = await trx('inmuebles')
+                    .where("inmuebles.id_inmueble", id)
+                    .update({
+                        descripcion: descripcion,
+                        m2: m2,
+                        precio: precio,
+                        tipo_inmueble: tipo_inmueble,
+                        tipo_operacion: tipo_operacion,
+                        dormitorios: dormitorios,
+                        filedata: fileData,
+                        filetype: fileType
 
-                });
-        })
-        res.json({
-            mensaje: "El inmueble se ha modificado correctamente"
-        })
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-};
+                    }, 'id_inmueble');
+                console.log(inmueble_modificado);
+
+                await trx('direcciones')
+                    .where("direcciones.id_inmueble", id)
+                    .update({
+                        direccion: direccion,
+                        pais: pais,
+                        departamento: departamento,
+                        barrio: barrio,
+
+                    });
+            })
+            res.json({
+                mensaje: "El inmueble se ha modificado correctamente"
+            })
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    })
+}
 
 exports.eliminarInmueble = async (req, res) => {
 
