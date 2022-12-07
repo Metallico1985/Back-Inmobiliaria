@@ -8,14 +8,12 @@ require("dotenv").config();
 const usersRoutes = require("./Routes/users");
 const inmueblesRoutes = require("./Routes/inmuebles");
 
-
 //middlewares
 const app = express();
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
-
 
 //Endpoints
 app.get("/api", (req, res) => {
