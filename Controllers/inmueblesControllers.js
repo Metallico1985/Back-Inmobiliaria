@@ -15,7 +15,6 @@ exports.listarInmuebles = (req, res) => {
 };
 exports.traerImagenPropiedad = async (req, res) => {
     const inmuebleId = req.params.id
-    console.log(inmuebleId)
     knex("inmuebles")
         .where({ id_inmueble: inmuebleId })
         .then((result) => {
@@ -160,7 +159,7 @@ exports.modificarInmueble = async (req, res) => {
 exports.eliminarInmueble = async (req, res) => {
 
     const id = req.params.id;
-    console.log(id)
+
     try {
         await knex.transaction(async (trx) => {
             const propiedadEliminada = await trx('direcciones')
@@ -187,10 +186,38 @@ exports.inmuebleById = (req, res) => {
         .where("inmuebles.id_inmueble", id)
         .then((resultado) => {
             if (resultado.length) {
-                res.json(resultado)
+                res.json(resultado[0])
             }
             else {
                 res.status(404).json({ error: "No existe el Id en la base de datos" });
+
             };
+        }).catch((error) => {
+            res.status(400).json({ error: error.message });
+        })
+}
+exports.inmueblesFiltrados = (req, res) => {
+    const { operacion, tipo, dormitorios, departamento } = req.body
+
+    knex.select("*")
+        .from("inmuebles")
+        .join("direcciones", { 'direcciones.id_inmueble': "inmuebles.id_inmueble" })
+        .then((resultado) => {
+            if (operacion !== "" && operacion !== undefined) {
+                resultado = resultado.filter(item => { return item.tipo_operacion == operacion })
+            }
+            if (tipo !== "" && tipo !== undefined) {
+                resultado = resultado.filter(item => { return item.tipo_inmueble == tipo })
+            }
+            if (dormitorios !== "" && dormitorios !== undefined) {
+                resultado = resultado.filter(item => { return item.dormitorios == dormitorios })
+            }
+            if (departamento !== "" && departamento !== undefined) {
+                resultado = resultado.filter(item => { return item.departamento == departamento })
+            }
+            res.json(resultado)
+        })
+        .catch((error) => {
+            res.status(400).json({ error: error.message });
         })
 }
