@@ -7,12 +7,14 @@ const {
     modificarInmueble,
     eliminarInmueble,
     inmuebleById,
-    traerImagenPropiedad
+    traerImagenPropiedad,
+    inmueblesFiltrados
 } = require("../Controllers/inmueblesControllers")
 
 const { verifyToken } = require("../Validators/auth");
 const { runValidation } = require("../Validators/index");
 
+router.post("/inmuebles/filtrados", runValidation, inmueblesFiltrados)
 router.get("/inmuebles/list", listarInmuebles)
 router.post('/inmuebles/nuevaPropiedad', ingresarInmueble);
 router.get('/inmuebles/detalle/:id', runValidation, verifyToken, inmuebleById)
