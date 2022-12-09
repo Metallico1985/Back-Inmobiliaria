@@ -38,7 +38,6 @@ exports.ingresarInmueble = async (req, res) => {
 
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
-
     form.parse(req, async (err, fields, files) => {
         if (err) {
             return res.status(400).json({
