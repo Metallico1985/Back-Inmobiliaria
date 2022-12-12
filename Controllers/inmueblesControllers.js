@@ -87,6 +87,7 @@ exports.ingresarInmueble = async (req, res) => {
             })
         } catch (error) {
             res.status(400).json({ error: error.message });
+
         }
 
     })
@@ -104,7 +105,7 @@ exports.modificarInmueble = async (req, res) => {
                 error: "No se pudo cargar la imagen"
             });
         }
-        console.log(files.file)
+        // console.log(files.file)
         let fileData;
         let fileType;
         if (files.file) {
@@ -119,6 +120,7 @@ exports.modificarInmueble = async (req, res) => {
 
         const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = fields
         const id = fields.id
+        console.log(`Este es el :  + ${id}`)
         try {
             await knex.transaction(async (trx) => {
                 const inmueble_modificado = await trx('inmuebles')
