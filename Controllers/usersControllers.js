@@ -1,5 +1,5 @@
 const knex = require("../Config/bd");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.infoUsuario = async (req, res) => {
