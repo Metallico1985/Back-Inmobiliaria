@@ -8,7 +8,6 @@ require("dotenv").config();
 const usersRoutes = require("./Routes/users");
 const inmueblesRoutes = require("./Routes/inmuebles");
 
-
 //middlewares
 const app = express();
 app.use(morgan("dev"));
@@ -16,7 +15,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 // app.use(cors());
 app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
-
 
 //Endpoints
 app.get("/api", (req, res) => {
