@@ -38,7 +38,6 @@ exports.ingresarInmueble = async (req, res) => {
 
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
-
     form.parse(req, async (err, fields, files) => {
         if (err) {
             return res.status(400).json({
@@ -88,6 +87,7 @@ exports.ingresarInmueble = async (req, res) => {
             })
         } catch (error) {
             res.status(400).json({ error: error.message });
+
         }
 
     })
@@ -105,7 +105,7 @@ exports.modificarInmueble = async (req, res) => {
                 error: "No se pudo cargar la imagen"
             });
         }
-        console.log(files.file)
+        // console.log(files.file)
         let fileData;
         let fileType;
         if (files.file) {
