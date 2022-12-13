@@ -120,7 +120,6 @@ exports.modificarInmueble = async (req, res) => {
 
         const { descripcion, m2, tipo_inmueble, tipo_operacion, precio, dormitorios, direccion, pais, departamento, barrio } = fields
         const id = fields.id
-        console.log(`Este es el :  + ${id}`)
         try {
             await knex.transaction(async (trx) => {
                 const inmueble_modificado = await trx('inmuebles')
