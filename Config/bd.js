@@ -8,8 +8,8 @@ const knex = require("knex")({
     ssl: true,
   },
   pool:{
-    min:2,
-    max:10
+    min:20,
+    max:1000
   }
 });
 
